@@ -10,6 +10,10 @@ git clone https://github.com/codesedoc/nlpe.git
 cd nlpe
 pip install -e .
 ```
+### Install from PyPi
+```
+pip install nlpe
+```
 ### Install from Docker Hub
 ```
 docker run -it codedocx/nlpe
@@ -20,11 +24,10 @@ There are examples of conducting expeirments by using nlpe at **experiment** dir
 The **experiment/semantic_similarity** is an example to calculate semantic similarity of two texts by fine-tuned the uncased [BERT](https://huggingface.co/google-bert/bert-base-uncased) on [STSB](https://huggingface.co/datasets/nyu-mll/glue) dataset.
 ```
 cd experiment/semantic_similarity
-pip install -r 
+pip install -r re
 python main.py -t sematic_similarity -d glue -a bert --eval_strategy epoch --output_dir tmp_trainer
 ```
-> **Version: 0.1.2**
+> **Version: 0.0.2**
 > 
-> **Author: 徐 勝 (Sheng Xu)** 
+> **E-mail: gocodedoc@gmail.com** 
 > 
-> **Affiliation: 山梨大学 (University of Yamanashi)**

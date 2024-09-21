@@ -4,14 +4,14 @@ build-backend = "hatchling.build"
 
 [project]
 name = "nlpe"
-version = "0.0.1"
+version = "0.0.2"
 authors = [
     { name="徐 勝", email="gocodedoc@gmail.com"},
 ]
 description = "A Python library for NLP experiments."
 readme = "README.md"
 license = { file="LICENSE"}
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
