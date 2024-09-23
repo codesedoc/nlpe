@@ -24,10 +24,10 @@ There are examples of conducting expeirments by using nlpe at **experiment** dir
 The **experiment/semantic_similarity** is an example to calculate semantic similarity of two texts by fine-tuned the uncased [BERT](https://huggingface.co/google-bert/bert-base-uncased) on [STSB](https://huggingface.co/datasets/nyu-mll/glue) dataset.
 ```
 cd experiment/semantic_similarity
-pip install -r re
+pip install -r requrements.txt
 python main.py -t sematic_similarity -d glue -a bert --eval_strategy epoch --output_dir tmp_trainer
 ```
-> **Version: 0.0.2**
+> **Version: 0.0.3**
 > 
 > **E-mail: gocodedoc@gmail.com** 
 > 

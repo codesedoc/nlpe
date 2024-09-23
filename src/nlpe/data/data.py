@@ -24,6 +24,7 @@ class DatasetSplitCategory(StrEnum):
 
 class DatasetVersion(StrEnum):
     RAW = auto()
+    VANILLA = auto()
     FEATURE = auto()
 
 

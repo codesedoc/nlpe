@@ -23,19 +23,19 @@ def test_pseudo_dataset():
 def test_pseudo_data_io():
     pseudo_dataset = {DatasetSplitCategory.TRAIN: ["tr1", "tr2", "tr3"], DatasetSplitCategory.VALIDATION: ["v1, v2"], DatasetSplitCategory.TEST: ["te1"]}
     pseduo_raw_file = lambda raw_dir: Path(raw_dir, "pseduo.json")
-    pseduo_split_file = lambda split: Path("tmp", "pseduo", f"{split}.json")
+    pseduo_split_file = lambda split, version: Path("tmp", "pseduo", version, f"{split}.json")
     def load_dataset_call(proxy_self: DatasetProxy, split: DatasetSplitCategory, version:DatasetVersion, *args, **kwargs):
         raw_dir = proxy_self.raw_dir
         if version == DatasetVersion.RAW:
             print(f"load {split} from raw file: {pseduo_raw_file(raw_dir)}")
             return json.loads(pseduo_raw_file(raw_dir).read_text())
         elif version == DatasetVersion.FEATURE:
-            if not pseduo_split_file(split).exists():
+            if not pseduo_split_file(split, version).exists():
                 print(f"load {split} from raw file: {pseduo_raw_file(raw_dir)}")
                 return json.loads(pseduo_raw_file(raw_dir).read_text())[split]
             else:
-                print(f"load {split} from pseduo file: {pseduo_split_file(split)}")
-                return json.loads(pseduo_split_file(split).read_text())
+                print(f"load {split} from pseduo file: {pseduo_split_file(split, version)}")
+                return json.loads(pseduo_split_file(split, version).read_text())
         else:
             raise ValueError
         
@@ -44,12 +44,10 @@ def test_pseudo_data_io():
         if version == DatasetVersion.RAW:
             print(f"dump {split} to raw file: {pseduo_raw_file(raw_dir)}")
             pseduo_raw_file(raw_dir).write_text(json.dumps(pseudo_dataset, indent=4))
-        elif version == DatasetVersion.FEATURE:
-            print(f"dump {split} to pseduo file: {pseduo_split_file(split)}")
-            pseduo_split_file(split).parent.mkdir(parents=True, exist_ok=True)
-            pseduo_split_file(split).write_text(json.dumps(pseudo_dataset[split]))
         else:
-            raise ValueError
+            print(f"dump {split} to pseduo file: {pseduo_split_file(split, version)}")
+            pseduo_split_file(split, version).parent.mkdir(parents=True, exist_ok=True)
+            pseduo_split_file(split, version).write_text(json.dumps(pseudo_dataset[split]))
         return True
     
     proxy = DatasetProxy(
@@ -70,7 +68,8 @@ def test_pseudo_data_io():
     
     for s in DatasetSplitCategory.all:
         pseudo_dataset[s] == test_data[s]
-        
+    
+    test_data.dump_dataset(version=DatasetVersion.VANILLA)
     test_data.dump_dataset(version=DatasetVersion.FEATURE)
     test_data.dump_dataset(version=DatasetVersion.RAW)    
 
