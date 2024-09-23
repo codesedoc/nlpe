@@ -1,6 +1,6 @@
 import json
 from typing import Dict, List
-from nlpe import ArgumentPool, DatasetProxy, TextData, Text, DatasetSplitCategory, Approach, DatasetVersion, EvaluatorProxy, ArgumentFactory
+from nlpe import ArgumentPool, DatasetProxy, TextData, Text, DatasetSplitCategory, Approach, EvaluatorProxy, ArgumentFactory
 from nlpe.utils import global_logger, jsonable
 from pathlib import Path
 from transformers import BertForSequenceClassification, BertTokenizerFast
@@ -64,11 +64,7 @@ def dump_dataset_call(proxy: DatasetProxy, split: DatasetSplitCategory, *args, *
     dataset_dir = Path("dataset")
     dataset_dir.mkdir(exist_ok=True)
     dataset: datasets.Dataset = stsb_data.dataset[split]
-    version: DatasetVersion = kwargs["version"]
-    if version is DatasetVersion.RAW:
-        pass
-    else:
-        dataset.to_json(Path(datasets),to_json_kwargs=dict(intent=4))
+    dataset.to_json(Path(dataset_dir, ArgumentPool().meta_argument["dataset"]),to_json_kwargs=dict(intent=4))
 
 
 def evaluate(*args, **kwargs):

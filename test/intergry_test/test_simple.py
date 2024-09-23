@@ -2,7 +2,7 @@ from copy import deepcopy
 import sys
 from argparse import ArgumentParser
 from typing import Any, Callable
-from nlpe import ArgumentFactory, ArgumentPool, Approach, EvaluatorProxy, Data, DatasetProxy, DatasetSplitCategory, DatasetVersion
+from nlpe import ArgumentFactory, ArgumentPool, Approach, EvaluatorProxy, Data, DatasetProxy, DatasetSplitCategory
 from nlpe.utils import global_logger, Glossary
 from nlpe.utils.test import extend_to_original_sys_argv
 

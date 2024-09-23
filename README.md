@@ -27,7 +27,7 @@ cd experiment/semantic_similarity
 pip install -r requrements.txt
 python main.py -t sematic_similarity -d glue -a bert --eval_strategy epoch --output_dir tmp_trainer
 ```
-> **Version: 0.0.3**
+> **Version: 0.0.4**
 > 
 > **E-mail: gocodedoc@gmail.com** 
 > 

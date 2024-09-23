@@ -20,12 +20,6 @@ class DatasetSplitCategory(StrEnum):
     @property
     def all(cls):
         return tuple(DatasetSplitCategory)
-    
-
-class DatasetVersion(StrEnum):
-    RAW = auto()
-    VANILLA = auto()
-    FEATURE = auto()
 
 
 class TaskCategory(StrEnum):
@@ -84,15 +78,15 @@ class DatasetProxy(ProxyBase):
         assert raw_dir.is_dir()
         assert self._download_raw_call(raw_dir)
 
-    def load_dataset(self, split: DatasetSplitCategory, *args, version: DatasetVersion = DatasetVersion.FEATURE, **kwargs) -> Any:
+    def load_dataset(self, split: DatasetSplitCategory, *args, **kwargs) -> Any:
         assert isinstance(split, DatasetSplitCategory)
-        result = self._load_dataset_call(self, split, *args, version=version, **kwargs)
+        result = self._load_dataset_call(self, split, *args, **kwargs)
         assert isinstance(result, self._dataset_type)
         return result
     
-    def dump_dataset(self, split: DatasetSplitCategory, *args, version: DatasetVersion = DatasetVersion.FEATURE, **kwargs) -> bool:
+    def dump_dataset(self, split: DatasetSplitCategory, *args, **kwargs) -> bool:
         assert isinstance(split, DatasetSplitCategory)
-        return self._dump_dataset_call(self, split, *args, version=version, **kwargs)
+        return self._dump_dataset_call(self, split, *args, **kwargs)
     
     @property
     def raw_dir(self) -> Path: 

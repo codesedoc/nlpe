@@ -1,6 +1,6 @@
 from pathlib import Path
 from typing import List
-from nlpe import DatasetProxy, Data, TextData, DatasetSplitCategory, DatasetVersion, Text, Language
+from nlpe import DatasetProxy, Data, TextData, DatasetSplitCategory, Text, Language
 import json
 
 def test_pseudo_dataset():
@@ -8,8 +8,8 @@ def test_pseudo_dataset():
     proxy = DatasetProxy(
         glossary="pseudo_dataset",  
         dataset_type=list,
-        load_dataset_call=lambda proxy_self, split, version: pseudo_dataset[split], 
-        dump_dataset_call=lambda proxy_self, split, version: True, 
+        load_dataset_call=lambda proxy_self, split: pseudo_dataset[split], 
+        dump_dataset_call=lambda proxy_self, split: True, 
         raw_dir=Path("tmp", "raw_dir"))
     test_data = Data(dataset_proxy=proxy)
     all_datasets = test_data.load_dataset()
@@ -23,31 +23,20 @@ def test_pseudo_dataset():
 def test_pseudo_data_io():
     pseudo_dataset = {DatasetSplitCategory.TRAIN: ["tr1", "tr2", "tr3"], DatasetSplitCategory.VALIDATION: ["v1, v2"], DatasetSplitCategory.TEST: ["te1"]}
     pseduo_raw_file = lambda raw_dir: Path(raw_dir, "pseduo.json")
-    pseduo_split_file = lambda split, version: Path("tmp", "pseduo", version, f"{split}.json")
-    def load_dataset_call(proxy_self: DatasetProxy, split: DatasetSplitCategory, version:DatasetVersion, *args, **kwargs):
+    pseduo_split_file = lambda split: Path("tmp", "pseduo", f"{split}.json")
+    def load_dataset_call(proxy_self: DatasetProxy, split: DatasetSplitCategory, *args, **kwargs):
         raw_dir = proxy_self.raw_dir
-        if version == DatasetVersion.RAW:
+        if not pseduo_split_file(split).exists():
             print(f"load {split} from raw file: {pseduo_raw_file(raw_dir)}")
-            return json.loads(pseduo_raw_file(raw_dir).read_text())
-        elif version == DatasetVersion.FEATURE:
-            if not pseduo_split_file(split, version).exists():
-                print(f"load {split} from raw file: {pseduo_raw_file(raw_dir)}")
-                return json.loads(pseduo_raw_file(raw_dir).read_text())[split]
-            else:
-                print(f"load {split} from pseduo file: {pseduo_split_file(split, version)}")
-                return json.loads(pseduo_split_file(split, version).read_text())
+            return json.loads(pseduo_raw_file(raw_dir).read_text())[split]
         else:
-            raise ValueError
+            print(f"load {split} from pseduo file: {pseduo_split_file(split)}")
+            return json.loads(pseduo_split_file(split).read_text())
         
-    def dump_dataset_call(proxy_self: DatasetProxy, split: DatasetSplitCategory, version:DatasetVersion, *args, **kwargs):
-        raw_dir = proxy_self.raw_dir
-        if version == DatasetVersion.RAW:
-            print(f"dump {split} to raw file: {pseduo_raw_file(raw_dir)}")
-            pseduo_raw_file(raw_dir).write_text(json.dumps(pseudo_dataset, indent=4))
-        else:
-            print(f"dump {split} to pseduo file: {pseduo_split_file(split, version)}")
-            pseduo_split_file(split, version).parent.mkdir(parents=True, exist_ok=True)
-            pseduo_split_file(split, version).write_text(json.dumps(pseudo_dataset[split]))
+    def dump_dataset_call(proxy_self: DatasetProxy, split: DatasetSplitCategory, *args, **kwargs):
+        print(f"dump {split} to pseduo file: {pseduo_split_file(split)}")
+        pseduo_split_file(split).parent.mkdir(parents=True, exist_ok=True)
+        pseduo_split_file(split).write_text(json.dumps(pseudo_dataset[split]))
         return True
     
     proxy = DatasetProxy(
@@ -57,6 +46,7 @@ def test_pseudo_data_io():
         load_dataset_call=load_dataset_call, 
         dump_dataset_call=dump_dataset_call, 
         raw_dir=Path("tmp", "raw_dir"))
+    
     test_data = Data(dataset_proxy=proxy)
     all_datasets = test_data.load_dataset()
     assert len(all_datasets) == 3
@@ -69,9 +59,7 @@ def test_pseudo_data_io():
     for s in DatasetSplitCategory.all:
         pseudo_dataset[s] == test_data[s]
     
-    test_data.dump_dataset(version=DatasetVersion.VANILLA)
-    test_data.dump_dataset(version=DatasetVersion.FEATURE)
-    test_data.dump_dataset(version=DatasetVersion.RAW)    
+    test_data.dump_dataset() 
 
 
 def test_pseudo_text_data():
@@ -79,8 +67,8 @@ def test_pseudo_text_data():
     proxy = DatasetProxy(
         glossary="pseudo_text_dataset",  
         dataset_type=list,
-        load_dataset_call=lambda proxy_self, split, version: pseudo_dataset[split], 
-        dump_dataset_call=lambda proxy_self, split, version: True, 
+        load_dataset_call=lambda proxy_self, split: pseudo_dataset[split], 
+        dump_dataset_call=lambda proxy_self, split: True, 
         raw_dir=Path("tmp", "raw_dir"))
     
     test_data = TextData(dataset_proxy=proxy, map_dataset_to_text_list=lambda dataset: [Text(s) for s in dataset])

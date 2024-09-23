@@ -12,7 +12,7 @@ from typing import Optional
 
 
 
-from .data import Data, DatasetProxy, TextData, Text, Language, DatasetSplitCategory, DatasetVersion
+from .data import Data, DatasetProxy, TextData, Text, Language, DatasetSplitCategory
 from .evaluator import EvaluatorProxy
 from .approach import Approach
 from .argument import ArgumentPool, ArgumentFactory, PATH_MODE
