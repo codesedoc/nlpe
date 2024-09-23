@@ -65,10 +65,10 @@ def dump_dataset_call(proxy: DatasetProxy, split: DatasetSplitCategory, *args, *
     dataset_dir.mkdir(exist_ok=True)
     dataset: datasets.Dataset = stsb_data.dataset[split]
     version: DatasetVersion = kwargs["version"]
-    if version is DatasetVersion.FEATURE: 
-        dataset.to_json(Path(datasets),to_json_kwargs=dict(intent=4))
-    elif version is DatasetVersion.RAW:
+    if version is DatasetVersion.RAW:
         pass
+    else:
+        dataset.to_json(Path(datasets),to_json_kwargs=dict(intent=4))
 
 
 def evaluate(*args, **kwargs):
