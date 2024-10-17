@@ -4,19 +4,24 @@
 Its mission is tio reduce the duplicate labors when we set up and NLP models or framework in current popular deep learning framework or methodology.
 
 ## Installation
-### Install from Source
+
+### Install with Pip
+```
+pip install nlpe
+```
+### Install with Conda
+```
+conda install codedoc::nlpe
+```
+### Install with Docker
+```
+docker run -it codedocx/nlpe
+```
+### Install with Source
 ```
 git clone https://github.com/codesedoc/nlpe.git
 cd nlpe
 pip install -e .
-```
-### Install from PyPi
-```
-pip install nlpe
-```
-### Install from Docker Hub
-```
-docker run -it codedocx/nlpe
 ```
 
 ## Experiment
@@ -27,7 +32,7 @@ cd experiment/semantic_similarity
 pip install -r requrements.txt
 python main.py -t sematic_similarity -d glue -a bert --eval_strategy epoch --output_dir tmp_trainer
 ```
-> **Version: 0.0.4**
+> **Version: 0.0.6**
 > 
 > **E-mail: gocodedoc@gmail.com** 
 > 

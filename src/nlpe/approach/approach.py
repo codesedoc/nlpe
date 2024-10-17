@@ -33,7 +33,7 @@ class Approach(ABC):
 
     def process(self, data: Data, *args, **kwargs):
         assert isinstance(data, Data)
-        self._processing_data = Data
+        self._processing_data = data
         self._process(data, *args, **kwargs)
         self._processing_data = None
 

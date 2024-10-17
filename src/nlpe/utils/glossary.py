@@ -2,23 +2,35 @@
 import re
 from typing import Optional, Any, Union
 from .utils import normalize_str_arg
+from .log import global_logger
 from .design_patterns import singleton
 from ..pool import Pool, UnifiedToken
 
 
 class Glossary:
-    def __init__(self, name: str, abbreviation: str='', description:str='', force=False) -> None:
-        name = normalize_str_arg(name)
-        abbreviation = normalize_str_arg(abbreviation)
-        description = normalize_str_arg(description)
-        if not re.search('.', name):
-            raise ValueError(f'"name" can not be empty')
-        if not re.search('.', abbreviation):
-            abbreviation = name
+    def __init__(self, name: str, /, abbreviation: str='', description:str='', update=False) -> None:
+        if isinstance(name, Glossary):
+            glossary = name
+            name = glossary.name
+            abbreviation = glossary.abbreviation
+            description = glossary.description
+            update = True
+        else:
+            name = normalize_str_arg(name)
+            abbreviation = normalize_str_arg(abbreviation)
+            description = normalize_str_arg(description)
+            if not re.search('.', name):
+                raise ValueError(f'"name" can not be empty')
+            if not re.search('.', abbreviation):
+                abbreviation = name
         self._name = name
         self._abbreviation=abbreviation
         self._description=description
-        GLOSSARY_POOL.push(self, force)
+        if GLOSSARY_POOL.search(self) and not update:
+            logger = global_logger()
+            logger.warning(f"({repr(self)}) has been exist!  A temprate glossary was initionlized without pushing it into GLOSSARY_POOL")
+        else:
+            GLOSSARY_POOL.push(self, force=update)
 
     uuid_type = str
     
@@ -32,7 +44,7 @@ class Glossary:
     
     @property
     def description(self):
-        self._description
+        return self._description
     
     @description.setter
     def description(self, desc: Optional[str]):
@@ -50,10 +62,14 @@ class Glossary:
     
 
     def __eq__(self, value: object) -> bool:
+        assert isinstance(value, Glossary)
         return self.uuid==value.uuid
     
     def __str__(self) -> str:
         return str(self.uuid)
+    
+    def __repr__(self) -> str:
+        return f"Glossary: {vars(self)}"
 
 
 @singleton
@@ -78,11 +94,11 @@ class GlossaryPool(Pool):
         old = self.search(glossary)
         if old:
             if not force:
-                raise ValueError(f"Glossary ({old}) has been exist! Overwrite the exsit glossary with current definiation by set 'force' to 'True'.")
+                raise ValueError(f"({repr(old)}) has been exist! Overwrite the exsit glossary with current definiation by set 'force' to 'True'.")
             else:
                 from .log import global_logger
                 logger = global_logger()
-                logger.warning(f"Glossary ({vars(old)}) has been exist! Overwrite with ({vars(glossary)})")
+                logger.warning(f"({repr(old)}) has been exist! Overwrite with ({repr(glossary)})")
         token = super().push(glossary)
         return token
     

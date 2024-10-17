@@ -1,14 +1,8 @@
 import json
 import os.path
 import sys
-import random
 from typing import Any, Callable, Dict, List, Optional, Iterable, Union
-import numpy as np
 
-
-def set_seed(seed=1):
-    random.seed(seed)
-    np.random.seed(seed)
 
 def class_name_chain(cls: type):
     supers = cls.__mro__

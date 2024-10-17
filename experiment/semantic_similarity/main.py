@@ -1,8 +1,13 @@
 import json
-from typing import Dict, List
-from nlpe import ArgumentPool, DatasetProxy, TextData, Text, DatasetSplitCategory, Approach, EvaluatorProxy, ArgumentFactory
-from nlpe.utils import global_logger, jsonable
+import os
 from pathlib import Path
+from nlpe import ArgumentPool, DatasetProxy, TextData, Text, DatasetSplitCategory, Approach, EvaluatorProxy, ArgumentFactory
+
+os.environ["HF_HOME"] = str(Path(ArgumentPool().meta_argument["cache_dir"], "huggingface"))
+
+from typing import Dict, List
+
+from nlpe.utils import global_logger, jsonable
 from transformers import BertForSequenceClassification, BertTokenizerFast
 from transformers import Trainer, DataCollatorWithPadding, EvalPrediction, HfArgumentParser, TrainingArguments
 from datasets import Dataset

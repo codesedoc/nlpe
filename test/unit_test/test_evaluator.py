@@ -1,5 +1,4 @@
 from nlpe import EvaluatorProxy
-import numpy as np
     
 class Evaluator:
     def dump(self):
@@ -8,7 +7,11 @@ class Evaluator:
     def compute(self, predictions, label):
         assert len(predictions) == len(label)
         length = len(predictions)
-        acc = np.sum(np.array(predictions) == np.array(label))/length
+        acc = 0
+        for p, l in zip(predictions, label):
+            if p == l:
+                acc += 1
+        acc /= length
         return {
             "acc": acc,
         }

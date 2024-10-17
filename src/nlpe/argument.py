@@ -16,7 +16,6 @@ from argparse import Namespace, ArgumentParser
 from .utils import Glossary, GLOSSARY_POOL
 
 from .utils import global_logger
-import numpy as np
 
 from .pool import Pool, UnifiedToken
 from .utils.design_patterns import singleton
@@ -150,7 +149,7 @@ class ArgumentPool(Pool):
     @property
     def meta_argument_token(self) -> UnifiedToken:
         if not isinstance(self._meta_argument_token, UnifiedToken):
-            argument_glossary = Glossary("meta_argument", force=True)
+            argument_glossary = Glossary("meta_argument", update=True)
             factory = ArgumentFactory(process=_parsing_meta_arg, argument_glossary=argument_glossary, argument_type=Namespace, to_dict=vars)
             self._meta_argument_token= self.push(factory)
         assert isinstance(self._meta_argument_token, UnifiedToken)

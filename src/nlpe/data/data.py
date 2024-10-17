@@ -96,7 +96,7 @@ class Data:
     def __init__(self, dataset_proxy:DatasetProxy, evaluator_proxy:EvaluatorProxy = None):
         assert isinstance(dataset_proxy, DatasetProxy)
         self._dataset_proxy = dataset_proxy
-        self._dataset: Dict[DatasetSplitCategory, dataset_proxy.dataset_type] = None
+        self._dataset: Dict[DatasetSplitCategory, Any] = None
         if evaluator_proxy is not None:
             assert isinstance(evaluator_proxy, EvaluatorProxy)
         self._evaluator_proxy = evaluator_proxy
@@ -161,6 +161,6 @@ class Data:
         return result
     
     
-    def evaluate(self, prediction, label, *args, **kwargs):
+    def evaluate(self, *args, **kwargs):
         assert isinstance(self._evaluator_proxy, EvaluatorProxy)
-        return self._evaluator_proxy.compute(prediction, label, *args, **kwargs)
+        return self._evaluator_proxy.compute(*args, **kwargs)
